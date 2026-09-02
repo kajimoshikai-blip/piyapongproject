@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW World - เลือกรุ่นรถยนต์ & สั่งซื้อ</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1a1d24;
+            --accent: #b89758;
+            --bg-main: #f4f6f9;
+            --bg-card: #fafbfc;
+            --text-main: #2c3038;
+            --text-muted: #8c95a6;
+            --border-color: #e2e7ec;
+            --radius-sm: 6px;
+            --radius-lg: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+        }
+
+        /* Header */
+        header {
+            background: #ffffff;
+            border-bottom: 2px solid var(--accent);
+            padding: 20px 5%;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        nav a {
+            color: #5a6270;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 6px 14px;
+            border-radius: 4px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+            background-color: rgba(184, 151, 88, 0.08);
+            border-color: var(--accent);
+        }
+
+        nav a.active {
+            color: #ffffff;
+            background-color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1300px;
+            width: 95%;
+            margin: 30px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shop-container {
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Sidebar Filters */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border-color);
+            padding-right: 20px;
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        .filter-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .filter-btn {
+            border: 1px solid #dcdfe6;
+            background: #fff;
+            padding: 9px 5px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #4a5160;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            font-family: inherit;
+            user-select: none;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* Showroom Cards */
+        .showroom {
+            flex: 1;
+        }
+
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .car-card {
+            background: var(--bg-card);
+            border: 1px solid #eef1f5;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .car-card.hidden {
+            display: none !important;
+        }
+
+        .car-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-color: var(--accent);
+            background: #ffffff;
+        }
+
+        .card-top-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .type-badge {
+            font-size: 0.75rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .tag-new {
+            background: var(--text-main);
+            color: #fff;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+
+        .car-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .car-card .sub-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .car-image-box {
+            position: relative;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .car-image-box img {
+            width: 100%;
+            height: 140px;
+            object-fit: contain;
+        }
+
+        .ev-icon-badge {
+            position: absolute;
+            top: -10px;
+            left: 5px;
+            width: 32px;
+            height: 32px;
+            background: #ffffff;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .price-text {
+            font-size: 0.8rem;
+            color: #5a6270;
+            margin-top: 10px;
+        }
+
+        .price-num {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .btn-buy {
+            width: 100%;
+            background: var(--primary);
+            color: #ffffff;
+            border: 1px solid var(--primary);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-buy:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .no-result {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        /* Action Footer Buttons */
+        .action-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eef1f5;
+        }
+
+        .btn-back {
+            color: #5a6270;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .btn-back:hover {
+            color: var(--primary);
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn-next:hover {
+            background: var(--accent);
+        }
+
+        /* Modal Order Form */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 90%;
+            max-width: 480px;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 8px;
+        }
+
+        .order-summary {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eef1f5;
+            margin-bottom: 20px;
+        }
+
+        .order-summary h4 {
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .order-summary p {
+            font-size: 0.9rem;
+            color: #5a6270;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dcdfe6;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-submit-order {
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .btn-submit-order:hover {
+            background: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #ffffff;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .shop-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding-right: 0;
+                padding-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ยินดีต้อนรับสู่โลกแห่งยานยนต์ BMW</h1>
+        <nav>
+            <a href="index.html">หน้าแรก</a>
+            <a href="index2.html" class="active">รุ่นรถยนต์ & สั่งซื้อ</a>
+            <a href="index3.html">เทคโนโลยี eDrive</a>
+            <a href="index4.html">การชาร์จ & แบตเตอรี่</a>
+            <a href="index5.html">คำนวณการประหยัด</a>
+            <a href="index6.html">สิทธิประโยชน์ & ตารางผ่อน</a>
+            <a href="index7.html">จองทดลองขับ</a>
+            <a href="index8.html">ศูนย์บริการ charging</a>
+            <a href="index9.html">คำถามที่พบบ่อย</a>
+            <a href="index10.html">ติดต่อเรา</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-title">
+            <span>🚗</span> เลือกรุ่นรถยนต์ BMW & สั่งซื้อออนไลน์ 
+            <span id="count-badge" style="color: var(--accent);">(8)</span>
+        </div>
+
+        <div class="shop-container">
+            <!-- Sidebar Filters -->
+            <aside class="sidebar">
+                <div class="filter-group">
+                    <div class="filter-title">หมวดหมู่ <span id="cat-count">(2)</span></div>
+                    <div class="filter-grid">
+                        <button class="filter-btn active" data-filter-type="cat" data-value="sav">SAV/SAC</button>
+                        <button class="filter-btn" data-filter-type="cat" data-value="touring">Touring</button>
+                        <button class="filter-btn active" data-filter-type="cat" data-value="sedan">Sedan</button>
+                        <button class="filter-btn" data-filter-type="cat" data-value="coupe">Coupé</button>
+                        <button class="filter-btn" data-filter-type="cat" data-value="convertible" style="grid-column: span 2;">Convertible</button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-title">ซีรีส์</div>
+                    <div class="filter-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <button class="filter-btn" data-filter-type="series" data-value="x">X</button>
+                        <button class="filter-btn" data-filter-type="series" data-value="2">2</button>
+                        <button class="filter-btn" data-filter-type="series" data-value="3">3</button>
+                        <button class="filter-btn" data-filter-type="series" data-value="4">4</button>
+                        <button class="filter-btn" data-filter-type="series" data-value="5">5</button>
+                        <button class="filter-btn" data-filter-type="series" data-value="7">7</button>
+                        <button class="filter-btn" data-filter-type="series" data-value="z">Z</button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-title">รุ่นระบบส่งกำลัง</div>
+                    <div class="filter-grid">
+                        <button class="filter-btn active" data-filter-type="engine" data-value="ev">ไฟฟ้า 100%</button>
+                        <button class="filter-btn" data-filter-type="engine" data-value="phev">ปลั๊กอิน-ไฮบริด</button>
+                        <button class="filter-btn" data-filter-type="engine" data-value="petrol">เบนซิน</button>
+                        <button class="filter-btn" data-filter-type="engine" data-value="diesel">ดีเซล</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Showroom Grid -->
+            <section class="showroom">
+                <div class="car-grid" id="car-grid">
+
+                    <!-- BMW iX -->
+                    <div class="car-card" data-cat="sav" data-series="x" data-engine="ev">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">SAV</span>
+                                <span class="tag-new">ใหม่</span>
+                            </div>
+                            <h3>BMW iX</h3>
+                            <div class="sub-title">รถยนต์ไฟฟ้า SAV อัจฉริยะ</div>
+                        </div>
+                        <div class="car-image-box">
+                            <span class="ev-icon-badge">🔌</span>
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/BMW_iX_IAA_2021_1X7A0204.jpg?width=500" alt="BMW iX">
+                        </div>
+                        <div>
+                            <div class="price-text">ขับเคลื่อนด้วยไฟฟ้าเต็มรูปแบบ</div>
+                            <div class="price-num">เริ่มต้น ฿5,799,000</div>
+                            <button class="btn-buy" data-name="BMW iX" data-price="฿5,799,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <!-- BMW iX3 -->
+                    <div class="car-card" data-cat="sav" data-series="x" data-engine="ev">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">SAV</span>
+                                <span class="tag-new">ใหม่</span>
+                            </div>
+                            <h3>BMW iX3</h3>
+                            <div class="sub-title">SAV ไฟฟ้าความล้ำสมัยที่ไม่ซ้ำใคร</div>
+                        </div>
+                        <div class="car-image-box">
+                            <span class="ev-icon-badge">🔌</span>
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/BMW_iX3_NA5_IAA_2025_DSC_1684.jpg?width=500" alt="BMW iX3">
+                        </div>
+                        <div>
+                            <div class="price-text">ขับเคลื่อนด้วยไฟฟ้าเต็มรูปแบบ</div>
+                            <div class="price-num">เริ่มต้น ฿3,459,000</div>
+                            <button class="btn-buy" data-name="BMW iX3" data-price="฿3,459,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <!-- BMW iX2 -->
+                    <div class="car-card" data-cat="sav" data-series="2" data-engine="ev">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">SAC</span>
+                            </div>
+                            <h3>BMW iX2</h3>
+                            <div class="sub-title">รถสปอร์ตคูเป้อเนกประสงค์ไฟฟ้า</div>
+                        </div>
+                        <div class="car-image-box">
+                            <span class="ev-icon-badge">🔌</span>
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/2024_BMW_iX2_xDrive_30_M_Sport.jpg?width=500" alt="BMW iX2">
+                        </div>
+                        <div>
+                            <div class="price-text">ขับเคลื่อนด้วยไฟฟ้าเต็มรูปแบบ</div>
+                            <div class="price-num">เริ่มต้น ฿3,259,000</div>
+                            <button class="btn-buy" data-name="BMW iX2" data-price="฿3,259,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <!-- BMW iX1 L -->
+                    <div class="car-card" data-cat="sav" data-series="x" data-engine="ev">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">SAV</span>
+                            </div>
+                            <h3>BMW iX1 L</h3>
+                            <div class="sub-title">SAV ไฟฟ้าไซส์คอมแพกต์</div>
+                        </div>
+                        <div class="car-image-box">
+                            <span class="ev-icon-badge">🔌</span>
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/BMW_iX1_IMG_5594.jpg?width=500" alt="BMW iX1 L">
+                        </div>
+                        <div>
+                            <div class="price-text">ขับเคลื่อนด้วยไฟฟ้าเต็มรูปแบบ</div>
+                            <div class="price-num">เริ่มต้น ฿2,359,000</div>
+                            <button class="btn-buy" data-name="BMW iX1 L" data-price="฿2,359,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <!-- BMW i5 -->
+                    <div class="car-card" data-cat="sedan" data-series="5" data-engine="ev">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">Sedan</span>
+                                <span class="tag-new">ใหม่</span>
+                            </div>
+                            <h3>BMW i5</h3>
+                            <div class="sub-title">ซีดานพรีเมียมพลังงานไฟฟ้า</div>
+                        </div>
+                        <div class="car-image-box">
+                            <span class="ev-icon-badge">🔌</span>
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/2023_BMW_i5.jpg?width=500" alt="BMW i5">
+                        </div>
+                        <div>
+                            <div class="price-text">ขับเคลื่อนด้วยไฟฟ้าเต็มรูปแบบ</div>
+                            <div class="price-num">เริ่มต้น ฿3,299,000</div>
+                            <button class="btn-buy" data-name="BMW i5" data-price="฿3,299,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <!-- BMW i3 -->
+                    <div class="car-card" data-cat="sedan" data-series="3" data-engine="ev">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">Sedan</span>
+                                <span class="tag-new">ใหม่</span>
+                            </div>
+                            <h3>BMW i3</h3>
+                            <div class="sub-title">สปอร์ตซีดานไฟฟ้าขับสนุก</div>
+                        </div>
+                        <div class="car-image-box">
+                            <span class="ev-icon-badge">🔌</span>
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/BMW_i3.JPG?width=500" alt="BMW i3">
+                        </div>
+                        <div>
+                            <div class="price-text">ขับเคลื่อนด้วยไฟฟ้าเต็มรูปแบบ</div>
+                            <div class="price-num">เริ่มต้น ฿2,799,000</div>
+                            <button class="btn-buy" data-name="BMW i3" data-price="฿2,799,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <!-- BMW 330e -->
+                    <div class="car-card" data-cat="sedan" data-series="3" data-engine="phev">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">Sedan</span>
+                            </div>
+                            <h3>BMW 330e M Sport</h3>
+                            <div class="sub-title">ซีดานปลั๊กอินไฮบริดสายสปอร์ต</div>
+                        </div>
+                        <div class="car-image-box">
+                            <span class="ev-icon-badge" style="border-color: var(--accent);">⚡</span>
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/2019_BMW_330e_M_Sport_Automatic_2.0_Front.jpg?width=500" alt="BMW 330e">
+                        </div>
+                        <div>
+                            <div class="price-text">ปลั๊กอิน-ไฮบริด</div>
+                            <div class="price-num">เริ่มต้น ฿2,999,000</div>
+                            <button class="btn-buy" data-name="BMW 330e M Sport" data-price="฿2,999,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <!-- BMW X5 -->
+                    <div class="car-card" data-cat="sav" data-series="x" data-engine="phev">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">SAV</span>
+                            </div>
+                            <h3>BMW X5 xDrive50e</h3>
+                            <div class="sub-title">SAV หรูทรงพลังระดับพรีเมียม</div>
+                        </div>
+                        <div class="car-image-box">
+                            <span class="ev-icon-badge" style="border-color: var(--accent);">⚡</span>
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/2023_BMW_X5_xDrive_50e_M_Sport.jpg?width=500" alt="BMW X5">
+                        </div>
+                        <div>
+                            <div class="price-text">ปลั๊กอิน-ไฮบริด</div>
+                            <div class="price-num">เริ่มต้น ฿5,099,000</div>
+                            <button class="btn-buy" data-name="BMW X5 xDrive50e" data-price="฿5,099,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <!-- BMW 220i Gran Coupe -->
+                    <div class="car-card" data-cat="coupe" data-series="2" data-engine="petrol">
+                        <div>
+                            <div class="card-top-info">
+                                <span class="type-badge">Coupé</span>
+                            </div>
+                            <h3>BMW 220i Gran Coupé</h3>
+                            <div class="sub-title">สปอร์ตคูเป้ขนาดคอมแพกต์</div>
+                        </div>
+                        <div class="car-image-box">
+                            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/2020_BMW_2-Series_220i_Gran_Coup%C3%A9_M_Sport.jpg?width=500" alt="BMW 220i">
+                        </div>
+                        <div>
+                            <div class="price-text">เครื่องยนต์เบนซิน</div>
+                            <div class="price-num">เริ่มต้น ฿1,999,000</div>
+                            <button class="btn-buy" data-name="BMW 220i Gran Coupé" data-price="฿1,999,000">🛒 สั่งซื้อ / จองออนไลน์</button>
+                        </div>
+                    </div>
+
+                    <div class="no-result" id="no-result">
+                        ไม่พบรุ่นรถยนต์ตรงตามเงื่อนไขที่เลือก
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <div class="action-area">
+            <a href="index.html" class="btn-back">← ย้อนกลับหน้าแรก</a>
+            <a href="index3.html" class="btn-next">ถัดไป: เทคโนโลยี eDrive →</a>
+        </div>
+    </main>
+
+    <!-- Modal Form -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-box">
+            <button class="modal-close" id="btnCloseModal">&times;</button>
+            <div class="modal-title">ยืนยันการสั่งซื้อ / จองออนไลน์</div>
+            
+            <div class="order-summary">
+                <h4 id="modalCarName">BMW Model</h4>
+                <p>ราคาเริ่มต้น: <span id="modalCarPrice" style="color: var(--accent); font-weight: 600;">฿0</span></p>
+                <p>ค่ามัดจำจองสิทธิ์: <strong style="color: var(--primary);">50,000 บาท</strong></p>
+            </div>
+
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="fullname">ชื่อ - นามสกุล *</label>
+                    <input type="text" id="fullname" placeholder="กรุณากรอกชื่อ-นามสกุล" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">เบอร์โทรศัพท์ติดต่อ *</label>
+                    <input type="tel" id="phone" placeholder="08X-XXX-XXXX" required>
+                </div>
+                <div class="form-group">
+                    <label for="showroom">เลือกศูนย์บริการที่สะดวกรับรถ *</label>
+                    <select id="showroom" required>
+                        <option value="">-- กรุณาเลือกศูนย์บริการ --</option>
+                        <option value="bangkok">BMW สาขาพระราม 4 (กรุงเทพฯ)</option>
+                        <option value="bangna">BMW สาขาบางนา (กรุงเทพฯ)</option>
+                        <option value="chiangmai">BMW สาขาเชียงใหม่</option>
+                        <option value="phuket">BMW สาขาภูเก็ต</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit-order">ยืนยันการสั่งซื้อ</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 BMW ELECTRIC WORLD. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <!-- Clean JavaScript Logic -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Elements
+            const buttons = document.querySelectorAll(".filter-btn");
+            const carCards = document.querySelectorAll(".car-card");
+            const countBadge = document.getElementById("count-badge");
+            const catCount = document.getElementById("cat-count");
+            const noResult = document.getElementById("no-result");
+            
+            const modal = document.getElementById("orderModal");
+            const modalCarName = document.getElementById("modalCarName");
+            const modalCarPrice = document.getElementById("modalCarPrice");
+            const btnCloseModal = document.getElementById("btnCloseModal");
+            const orderForm = document.getElementById("orderForm");
+
+            // --- Filtering System ---
+            buttons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btn.classList.toggle("active");
+                    filterCars();
+                });
+            });
+
+            function filterCars() {
+                const getActiveValues = (type) => 
+                    Array.from(document.querySelectorAll(`.filter-btn[data-filter-type="${type}"].active`))
+                         .map(b => b.dataset.value);
+
+                const activeCats = getActiveValues('cat');
+                const activeSeries = getActiveValues('series');
+                const activeEngines = getActiveValues('engine');
+
+                catCount.textContent = `(${activeCats.length})`;
+
+                let visibleCount = 0;
+
+                carCards.forEach(card => {
+                    const { cat, series, engine } = card.dataset;
+                    
+                    const matchCat = activeCats.length === 0 || activeCats.includes(cat);
+                    const matchSeries = activeSeries.length === 0 || activeSeries.includes(series);
+                    const matchEngine = activeEngines.length === 0 || activeEngines.includes(engine);
+
+                    if (matchCat && matchSeries && matchEngine) {
+                        card.classList.remove("hidden");
+                        visibleCount++;
+                    } else {
+                        card.classList.add("hidden");
+                    }
+                });
+
+                countBadge.textContent = `(${visibleCount})`;
+                noResult.style.display = visibleCount === 0 ? "block" : "none";
+            }
+
+            // Initial Filter Run
+            filterCars();
+
+            // --- Modal Controls ---
+            const openModal = (name, price) => {
+                modalCarName.textContent = name;
+                modalCarPrice.textContent = price;
+                modal.classList.add("active");
+            };
+
+            const closeModal = () => modal.classList.remove("active");
+
+            // Buy Button Click Handlers (Delegation / Clean Listeners)
+            document.querySelectorAll(".btn-buy").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const carName = btn.dataset.name;
+                    const carPrice = btn.dataset.price;
+                    openModal(carName, carPrice);
+                });
+            });
+
+            btnCloseModal.addEventListener("click", closeModal);
+            
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            // --- Form Submit ---
+            orderForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const name = document.getElementById("fullname").value;
+                const car = modalCarName.textContent;
+
+                alert(`ขอบคุณครับ คุณ${name} ระบบได้รับการจองรุ่น ${car} เรียบร้อยแล้ว เจ้าหน้าที่จะติดต่อกลับโดยเร็วที่สุด`);
+                orderForm.reset();
+                closeModal();
+            });
+        });
+    </script>
+</body>
+</html>

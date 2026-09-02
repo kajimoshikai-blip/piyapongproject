@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW Electric World - คำถามที่พบบ่อย</title>
+    
+    <!-- Google Fonts: Cinzel & Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #2c3038;
+            line-height: 1.8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: #ffffff;
+            border-bottom: 2px solid #b89758;
+            padding: 25px 5%;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        header h1 {
+            color: #1a1d24;
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        nav a {
+            color: #5a6270;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 400;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            letter-spacing: 0.5px;
+        }
+
+        nav a:hover {
+            color: #b89758;
+            background-color: rgba(184, 151, 88, 0.08);
+            border-color: #b89758;
+        }
+
+        nav a.active {
+            color: #ffffff;
+            background-color: #1a1d24;
+            border-color: #1a1d24;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+        }
+
+        /* Main Container */
+        main {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 50px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e7ec;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+            flex: 1;
+        }
+
+        h2 {
+            color: #1a1d24;
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 2.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-left: 4px solid #b89758;
+            padding-left: 18px;
+            letter-spacing: 1px;
+        }
+
+        main > p {
+            color: #6c757d;
+            margin-bottom: 35px;
+            font-size: 1.05rem;
+        }
+
+        /* FAQ Accordion Section */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .faq-item {
+            background: #fafbfc;
+            border: 1px solid #eef1f5;
+            border-radius: 8px;
+            padding: 22px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: #b89758;
+            box-shadow: 0 6px 18px rgba(184, 151, 88, 0.08);
+            background: #ffffff;
+        }
+
+        .faq-item h3 {
+            color: #1a1d24;
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-item h3::before {
+            content: "Q.";
+            color: #b89758;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .faq-item p {
+            color: #5a6270;
+            font-size: 0.98rem;
+            margin: 0;
+            padding-left: 28px;
+            line-height: 1.7;
+        }
+
+        /* Navigation Buttons */
+        .action-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #eef1f5;
+        }
+
+        .btn-back {
+            color: #5a6270;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .btn-back:hover {
+            color: #b89758;
+        }
+
+        button {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #1a1d24 0%, #343a46 100%);
+            color: #ffffff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #b89758 0%, #96783e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(184, 151, 88, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #ffffff;
+            color: #8c95a6;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e7ec;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ยินดีต้อนรับสู่โลกแห่งยานยนต์ไฟฟ้า BMW</h1>
+        <nav>
+            <a href="index.html">หน้าแรก</a>
+            <a href="index2.html">รุ่นรถไฟฟ้า</a>
+            <a href="index3.html">เทคโนโลยี eDrive</a>
+            <a href="index4.html">การชาร์จ & แบตเตอรี่</a>
+            <a href="index5.html">คำนวณการประหยัด</a>
+            <a href="index6.html">สิทธิประโยชน์ & ตารางผ่อน</a>
+            <a href="index7.html">จองทดลองขับ</a>
+            <a href="index8.html">ศูนย์บริการ charging</a>
+            <a href="index9.html" class="active">คำถามที่พบบ่อย</a>
+            <a href="index10.html">ติดต่อเรา</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>คำถามที่พบบ่อย (FAQ)</h2>
+        <p>ไขทุกข้อสงสัยเกี่ยวกับยานยนต์ไฟฟ้า BMW เพื่อความมั่นใจก่อนการเป็นเจ้าของ</p>
+        
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3>รถยนต์ไฟฟ้า BMW ชาร์จไฟบ้านปลอดภัยหรือไม่?</h3>
+                <p>ปลอดภัยระดับสูงสุด ด้วยอุปกรณ์ BMW Wallbox ที่ได้รับการติดตั้งโดยทีมวิศวกรผู้เชี่ยวชาญ พร้อมระบบตัดไฟอัตโนมัติและการตรวจสอบมาตรฐานไฟฟ้าภายในบ้านก่อนการติดตั้ง</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>แบตเตอรี่ของ BMW i มีอายุการใช้งานนานเท่าใด?</h3>
+                <p>แบตเตอรี่ลิเธียมไอออนแรงดันสูงของ BMW มีอายุการใช้งานยาวนาน โดยมาพร้อมการรับประกันคุณภาพแบตเตอรี่นานถึง 8 ปี หรือ 160,000 กิโลเมตร (แล้วแต่ระยะใดถึงก่อน)</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>หากแบตเตอรี่หมดระหว่างเดินทาง ต้องทำอย่างไร?</h3>
+                <p>BMW มีบริการช่วยเหลือฉุกเฉิน Roadside Assistance ตลอด 24 ชั่วโมง ซึ่งสามารถประสานงานเคลื่อนย้ายรถไปยังสถานีชาร์จหรือศูนย์บริการ BMW ที่ใกล้ที่สุดได้ทันที</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>สามารถขับรถยนต์ไฟฟ้าลุยน้ำท่วมได้หรือไม่?</h3>
+                <p>ตัวรถและชุดแบตเตอรี่แรงดันสูงได้รับการซีลป้องกันน้ำและฝุ่นตามมาตรฐานสากล (IP67/IP69K) สามารถขับผ่านน้ำท่วมขังในระดับปกติได้อย่างปลอดภัยเช่นเดียวกับรถยนต์เครื่องยนต์สันดาป</p>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <a href="index8.html" class="btn-back">← ย้อนกลับ: ศูนย์บริการ charging</a>
+            <a href="index10.html"><button>ถัดไป: ติดต่อเรา (หน้าสุดท้าย) →</button></a>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 BMW ELECTRIC WORLD. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW Electric World - คำนวณการประหยัด</title>
+    
+    <!-- Google Fonts: Cinzel & Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #2c3038;
+            line-height: 1.7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: #ffffff;
+            border-bottom: 2px solid #b89758;
+            padding: 20px 5%;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        header h1 {
+            color: #1a1d24;
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        nav a {
+            color: #5a6270;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 400;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        nav a:hover {
+            color: #b89758;
+            background-color: rgba(184, 151, 88, 0.08);
+            border-color: #b89758;
+        }
+
+        nav a.active {
+            color: #ffffff;
+            background-color: #1a1d24;
+            border-color: #1a1d24;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+        }
+
+        /* Hero Banner Section */
+        .hero-banner {
+            background: linear-gradient(135deg, #1a1d24 0%, #2c323e 100%);
+            color: #ffffff;
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(184, 151, 88, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-banner h2 {
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .hero-banner p {
+            color: #a0a7b5;
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1050px;
+            width: 90%;
+            margin: -30px auto 50px;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #eef1f5;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            flex: 1;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Calculator Layout (Grid) */
+        .calc-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calc-box {
+            background: #fafbfc;
+            border: 1px solid #eef1f5;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            color: #333742;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #dcdfe6;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-family: 'Prompt', sans-serif;
+            outline: none;
+            transition: all 0.3s;
+            background: #ffffff;
+        }
+
+        .form-group input:focus {
+            border-color: #b89758;
+            box-shadow: 0 0 0 3px rgba(184, 151, 88, 0.15);
+        }
+
+        .calc-btn {
+            width: 100%;
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #1a1d24 0%, #343a46 100%);
+            color: #ffffff;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .calc-btn:hover {
+            background: linear-gradient(135deg, #b89758 0%, #96783e 100%);
+            box-shadow: 0 6px 18px rgba(184, 151, 88, 0.25);
+            transform: translateY(-1px);
+        }
+
+        /* Results Box */
+        .result-box {
+            background: #fdfdfd;
+            border: 1px solid #eef1f5;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .result-placeholder {
+            text-align: center;
+            color: #a0a7b5;
+            padding: 20px 0;
+        }
+
+        .result-placeholder icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .result-content {
+            display: none;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 0.95rem;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .result-item .val {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .result-highlight {
+            background: rgba(184, 151, 88, 0.08);
+            margin: 15px -15px 0;
+            padding: 18px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(184, 151, 88, 0.3);
+        }
+
+        .result-highlight span {
+            color: #1a1d24;
+            font-weight: 600;
+        }
+
+        .result-highlight .val-savings {
+            color: #b89758;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        /* Information Grid Section (แก้ปัญหาหน้าโล่ง) */
+        .info-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eef1f5;
+        }
+
+        .info-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a1d24;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background: #b89758;
+            border-radius: 2px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: #fafbfc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #f0f2f5;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            border-color: #b89758;
+            background: #ffffff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+        }
+
+        .info-card h4 {
+            font-size: 1rem;
+            color: #1a1d24;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .info-card p {
+            font-size: 0.88rem;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        /* Navigation Buttons */
+        .action-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eef1f5;
+        }
+
+        .btn-back {
+            color: #5a6270;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-back:hover {
+            color: #b89758;
+        }
+
+        .btn-next {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #1a1d24 0%, #343a46 100%);
+            color: #ffffff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-next:hover {
+            background: linear-gradient(135deg, #b89758 0%, #96783e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(184, 151, 88, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #ffffff;
+            color: #8c95a6;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e7ec;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ยินดีต้อนรับสู่โลกแห่งยานยนต์ไฟฟ้า BMW</h1>
+        <nav>
+            <a href="index.html">หน้าแรก</a>
+            <a href="index2.html">รุ่นรถไฟฟ้า</a>
+            <a href="index3.html">เทคโนโลยี eDrive</a>
+            <a href="index4.html">การชาร์จ & แบตเตอรี่</a>
+            <a href="index5.html" class="active">คำนวณการประหยัด</a>
+            <a href="index6.html">สิทธิประโยชน์ & ตารางผ่อน</a>
+            <a href="index7.html">จองทดลองขับ</a>
+            <a href="index8.html">ศูนย์บริการ charging</a>
+            <a href="index9.html">คำถามที่พบบ่อย</a>
+            <a href="index10.html">ติดต่อเรา</a>
+        </nav>
+    </header>
+
+    <div class="hero-banner">
+        <h2>ประเมินผลการประหยัดพลังงาน</h2>
+        <p>เปรียบเทียบความคุ้มค่าระหว่างรถยนต์เครื่องยนต์สันดาปและรถยนต์ไฟฟ้า BMW สัมผัสความคุ้มค่าในทุกกิโลเมตร</p>
+    </div>
+
+    <main>
+        <div class="calc-wrapper">
+            <!-- ฝั่งป้อนข้อมูล -->
+            <div class="calc-box">
+                <div>
+                    <div class="form-group">
+                        <label for="distance">ระยะทางขับขี่ต่อเดือน (กิโลเมตร):</label>
+                        <input type="number" id="distance" value="1500" placeholder="เช่น 1500" min="0">
+                    </div>
+                </div>
+                <button type="button" class="calc-btn" onclick="calculateSavings()">คำนวณผลการประหยัด</button>
+            </div>
+
+            <!-- ฝั่งแสดงผลลัพธ์ -->
+            <div class="result-box">
+                <div class="result-placeholder" id="placeholder">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">⚡</div>
+                    <p>ระบุระยะทางและกด <strong>"คำนวณผลการประหยัด"</strong><br>เพื่อดูการเปรียบเทียบค่าใช้จ่าย</p>
+                </div>
+
+                <div class="result-content" id="results">
+                    <div class="result-item">
+                        <span>ประมาณการค่าน้ำมัน / เดือน:</span>
+                        <span class="val" id="fuelCost">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span>ประมาณการค่าไฟฟ้า / เดือน:</span>
+                        <span class="val" id="evCost">-</span>
+                    </div>
+                    <div class="result-item result-highlight">
+                        <span>ประหยัดได้ประมาณ / เดือน:</span>
+                        <span class="val-savings" id="savedAmount">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ข้อความและ Card ข้อมูลเพิ่มเติม (ช่วยแก้ปัญหาหน้าโล่ง) -->
+        <div class="info-section">
+            <div class="info-title">เกณฑ์และเกร็ดน่ารู้ในการคำนวณ</div>
+            <div class="cards-grid">
+                <div class="info-card">
+                    <h4>⛽ อัตราค่าน้ำมันเฉลี่ย</h4>
+                    <p>คำนวณจากอัตราสิ้นเปลืองเฉลี่ย 10-12 กม./ลิตร ที่ราคาเฉลี่ย 3.50 บาท/กม.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🔌 อัตราค่าไฟฟ้า TOU</h4>
+                    <p>คำนวณจากการชาร์จไฟบ้านช่วง Off-Peak (มิเตอร์ TOU) ในอัตราเฉลี่ยเพียง 0.80 บาท/กม.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🌱 เป็นมิตรต่อสิ่งแวดล้อม</h4>
+                    <p>นอกจากช่วยประหยัดค่าใช้จ่ายแล้ว การใช้รถยนต์ไฟฟ้า BMW ยังช่วยลดการปล่อยก๊าซ CO2 สู่อากาศ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="action-area">
+            <a href="index4.html" class="btn-back">← ย้อนกลับ: การชาร์จ & แบตเตอรี่</a>
+            <a href="index6.html" class="btn-next">ถัดไป: สิทธิประโยชน์ & ตารางผ่อน →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 BMW ELECTRIC WORLD. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script>
+        function calculateSavings() {
+            const distance = parseFloat(document.getElementById('distance').value) || 0;
+            
+            // สมมติฐานราคาคำนวณ:
+            // น้ำมัน: 3.5 บาท/กม.
+            // ไฟฟ้า: 0.8 บาท/กม.
+            const fuelRate = 3.5;
+            const evRate = 0.8;
+
+            const fuelTotal = distance * fuelRate;
+            const evTotal = distance * evRate;
+            const savedTotal = fuelTotal - evTotal;
+
+            document.getElementById('fuelCost').innerText = fuelTotal.toLocaleString('th-TH') + ' บาท';
+            document.getElementById('evCost').innerText = evTotal.toLocaleString('th-TH') + ' บาท';
+            document.getElementById('savedAmount').innerText = savedTotal.toLocaleString('th-TH') + ' บาท';
+
+            // แสดงผลลัพธ์ ซ่อน placeholder
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

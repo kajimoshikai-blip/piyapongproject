@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW Electric World - การชาร์จ & แบตเตอรี่</title>
+    
+    <!-- Google Fonts: Cinzel, Orbitron & Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Orbitron:wght@500;700;900&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0b0d10;
+            color: #e1e4ed;
+            line-height: 1.8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: #12161f;
+            border-bottom: 2px solid #0066b1;
+            padding: 25px 5%;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 25px rgba(0, 102, 177, 0.2);
+        }
+
+        header h1 {
+            color: #ffffff;
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        nav a {
+            color: #9aa5b5;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 400;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            letter-spacing: 0.5px;
+        }
+
+        nav a:hover {
+            color: #05a3e8;
+            background-color: rgba(5, 163, 232, 0.1);
+            border-color: #05a3e8;
+        }
+
+        nav a.active {
+            color: #ffffff;
+            background-color: #0066b1;
+            border-color: #05a3e8;
+            box-shadow: 0 0 15px rgba(0, 102, 177, 0.5);
+            font-weight: 500;
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 40px;
+            background: #12151c;
+            border-radius: 16px;
+            border: 1px solid #1e2533;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            flex: 1;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 2.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            border-left: 4px solid #0066b1;
+            padding-left: 18px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 102, 177, 0.3);
+        }
+
+        main > p {
+            color: #8f9ba8;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+
+        /* BATTERY & CHARGING HUD DISPLAY */
+        .charging-hud {
+            background: linear-gradient(180deg, #080a0e 0%, #10141d 100%);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid #1a2332;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 10px 30px rgba(0, 102, 177, 0.15);
+            margin-bottom: 35px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .charging-hud::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0066b1, #05a3e8, #00ffaa);
+            box-shadow: 0 0 12px #05a3e8;
+        }
+
+        .hud-status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e2736;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .hud-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: #05a3e8;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .charging-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #00ffaa;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ffaa;
+            animation: pulse 1.5s infinite;
+        }
+
+        .charging-dot.discharging {
+            background-color: #ffaa00;
+            box-shadow: 0 0 10px #ffaa00;
+        }
+
+        /* Battery Visual Progress Bar */
+        .battery-bar-container {
+            width: 100%;
+            height: 12px;
+            background-color: #161c28;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            border: 1px solid #253043;
+            padding: 2px;
+        }
+
+        .battery-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0066b1, #00ffaa);
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+        }
+
+        .hud-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .hud-box {
+            background: rgba(18, 24, 36, 0.6);
+            border: 1px solid rgba(37, 48, 67, 0.8);
+            border-radius: 12px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hud-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #00ffaa;
+            text-shadow: 0 0 15px rgba(0, 255, 170, 0.4);
+        }
+
+        .hud-label {
+            font-size: 0.75rem;
+            color: #728196;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Charging Cards Grid */
+        .charge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .charge-card {
+            background: #161b26;
+            border: 1px solid #222b3d;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .charge-card:hover {
+            transform: translateY(-4px);
+            border-color: #05a3e8;
+            box-shadow: 0 10px 25px rgba(5, 163, 232, 0.15);
+            background: #1a2130;
+        }
+
+        .charge-card h3 {
+            color: #ffffff;
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .charge-card h3 i {
+            color: #05a3e8;
+            font-size: 1.1rem;
+        }
+
+        .charge-card p {
+            color: #a3b0c2;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            line-height: 1.7;
+        }
+
+        /* Navigation Buttons */
+        .action-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #1e2736;
+        }
+
+        .btn-back {
+            color: #8fa0b5;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .btn-back:hover {
+            color: #05a3e8;
+        }
+
+        button.btn-next {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #0066b1 0%, #00447a 100%);
+            color: #ffffff;
+            padding: 12px 30px;
+            border: 1px solid #05a3e8;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 102, 177, 0.4);
+        }
+
+        button.btn-next:hover {
+            background: linear-gradient(135deg, #05a3e8 0%, #0066b1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(5, 163, 232, 0.6);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.4; transform: scale(0.9); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #12161f;
+            color: #65758a;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-top: 1px solid #1e2533;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ยินดีต้อนรับสู่โลกแห่งยานยนต์ไฟฟ้า BMW</h1>
+        <nav>
+            <a href="index.html">หน้าแรก</a>
+            <a href="index2.html">รุ่นรถไฟฟ้า</a>
+            <a href="index3.html">เทคโนโลยี eDrive</a>
+            <a href="index4.html" class="active">การชาร์จ & แบตเตอรี่</a>
+            <a href="index5.html">คำนวณการประหยัด</a>
+            <a href="index6.html">สิทธิประโยชน์ & ตารางผ่อน</a>
+            <a href="index7.html">จองทดลองขับ</a>
+            <a href="index8.html">ศูนย์บริการ charging</a>
+            <a href="index9.html">คำถามที่พบบ่อย</a>
+            <a href="index10.html">ติดต่อเรา</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>การชาร์จ & เทคโนโลยีแบตเตอรี่</h2>
+        <p>ความสะดวกสบายในการใช้งานประจำวัน ด้วยเทคโนโลยีระบบชาร์จเร็วและแบตเตอรี่แรงดันสูงทรงประสิทธิภาพ</p>
+
+        <!-- LIVE BATTERY & CHARGING HUD DISPLAY -->
+        <div class="charging-hud">
+            <div class="hud-status-header">
+                <span class="hud-title">
+                    <div class="charging-dot" id="hud-dot"></div> 
+                    BATTERY & CHARGING REAL-TIME MONITOR
+                </span>
+                <span style="font-family: 'Orbitron'; font-size: 0.85rem; color: #00ffaa;" id="charging-status-text">CONNECTING...</span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="battery-bar-container">
+                <div class="battery-bar-fill" id="battery-bar"></div>
+            </div>
+
+            <div class="hud-grid">
+                <div class="hud-box">
+                    <div class="hud-value" id="battery-level">--%</div>
+                    <div class="hud-label">LIVE BATTERY LEVEL (SOC)</div>
+                </div>
+                <div class="hud-box">
+                    <div class="hud-value" id="charging-time">--</div>
+                    <div class="hud-label" id="charging-time-label">ESTIMATED TIME</div>
+                </div>
+                <div class="hud-box">
+                    <div class="hud-value">205 KW</div>
+                    <div class="hud-label">MAX DC CHARGING RATE</div>
+                </div>
+                <div class="hud-box">
+                    <div class="hud-value">22 KW</div>
+                    <div class="hud-label">AC HOME WALLBOX RATE</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charge-grid">
+            <div class="charge-card">
+                <h3><i class="fa-solid fa-house-lightning"></i> BMW Wallbox (AC Fast Charge)</h3>
+                <p>เครื่องชาร์จติดตั้งที่บ้าน รองรับกำลังไฟสูงสุด 22 kW ชาร์จข้ามคืนได้อย่างปลอดภัย สะดวก พร้อมใช้งานในทุกเช้า</p>
+            </div>
+            
+            <div class="charge-card">
+                <h3><i class="fa-solid fa-bolt-lightning"></i> DC High-Power Charging</h3>
+                <p>รองรับการชาร์จเร็วแบบกระแสตรงที่สถานีสาธารณะ ชาร์จพลังงานจาก 10% ถึง 80% ได้ในเวลาเพียงประมาณ 30 นาที</p>
+            </div>
+
+            <div class="charge-card">
+                <h3><i class="fa-solid fa-car-battery"></i> High-Voltage Battery</h3>
+                <p>แบตเตอรี่ลิเธียมไอออนแรงดันสูง ความจุพลังงานสูง ออกแบบโมดูลให้บางพิเศษเพื่อจุดศูนย์ถ่วงที่ต่ำและการกระจายน้ำหนักที่สมบูรณ์แบบ</p>
+            </div>
+
+            <div class="charge-card">
+                <h3><i class="fa-solid fa-temperature-arrow-down"></i> Thermal Management</h3>
+                <p>ระบบควบคุมอุณหภูมิแบตเตอรี่อัจฉริยะ ช่วยรักษาระดับอุณหภูมิที่เหมาะสมตลอดเวลา เพื่อยืดอายุการใช้งานและคงประสิทธิภาพการชาร์จสูงสุด</p>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <a href="index3.html" class="btn-back">← ย้อนกลับ: เทคโนโลยี eDrive</a>
+            <a href="index5.html"><button class="btn-next">ถัดไป: คำนวณการประหยัด →</button></a>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 BMW ELECTRIC WORLD. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <!-- JavaScript สำหรับใช้งาน Battery Status API -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const levelEl = document.getElementById('battery-level');
+            const barEl = document.getElementById('battery-bar');
+            const statusTextEl = document.getElementById('charging-status-text');
+            const timeEl = document.getElementById('charging-time');
+            const timeLabelEl = document.getElementById('charging-time-label');
+            const dotEl = document.getElementById('hud-dot');
+
+            // ตรวจสอบว่าเบราว์เซอร์รองรับ Battery API หรือไม่
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(battery => {
+                    function updateBatteryInfo() {
+                        // อัปเดตเปอร์เซ็นต์แบตเตอรี่
+                        const level = Math.round(battery.level * 100);
+                        levelEl.textContent = `${level}%`;
+                        barEl.style.width = `${level}%`;
+
+                        // อัปเดตสถานะการชาร์จ
+                        if (battery.charging) {
+                            statusTextEl.textContent = "CHARGING (กำลังชาร์จ)";
+                            statusTextEl.style.color = "#00ffaa";
+                            dotEl.classList.remove('discharging');
+                            timeLabelEl.textContent = "TIME TO FULL CHARGE";
+
+                            if (battery.chargingTime !== Infinity && battery.chargingTime > 0) {
+                                const mins = Math.round(battery.chargingTime / 60);
+                                timeEl.textContent = `${mins} MIN`;
+                            } else {
+                                timeEl.textContent = "CHARGING";
+                            }
+                        } else {
+                            statusTextEl.textContent = "DISCHARGING (ใช้แบตเตอรี่)";
+                            statusTextEl.style.color = "#ffaa00";
+                            dotEl.classList.add('discharging');
+                            timeLabelEl.textContent = "ESTIMATED TIME LEFT";
+
+                            if (battery.dischargingTime !== Infinity && battery.dischargingTime > 0) {
+                                const hours = (battery.dischargingTime / 3600).toFixed(1);
+                                timeEl.textContent = `${hours} HRS`;
+                            } else {
+                                timeEl.textContent = "BATTERY";
+                            }
+                        }
+                    }
+
+                    // เรียกทำงานครั้งแรก
+                    updateBatteryInfo();
+
+                    // ตั้ง Event Listeners รับการเปลี่ยนแปลงของแบตเตอรี่
+                    battery.addEventListener('levelchange', updateBatteryInfo);
+                    battery.addEventListener('chargingchange', updateBatteryInfo);
+                    battery.addEventListener('chargingtimechange', updateBatteryInfo);
+                    battery.addEventListener('dischargingtimechange', updateBatteryInfo);
+                });
+            } else {
+                // ตัวเลือกสำรองหากเบราว์เซอร์ไม่รองรับ API แบตเตอรี่ (เช่น iOS Safari)
+                levelEl.textContent = "85%";
+                barEl.style.width = "85%";
+                statusTextEl.textContent = "DEMO MODE";
+                timeEl.textContent = "34 MIN";
+                timeLabelEl.textContent = "DC FAST CHARGE (10-80%)";
+            }
+        });
+    </script>
+</body>
+</html>

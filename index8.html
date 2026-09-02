@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW Electric World - ศูนย์บริการ Charging เชียงใหม่</title>
+    
+    <!-- Google Fonts: Cinzel & Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #2c3038;
+            line-height: 1.8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: #ffffff;
+            border-bottom: 2px solid #b89758;
+            padding: 25px 5%;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        header h1 {
+            color: #1a1d24;
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        nav a {
+            color: #5a6270;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 400;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            letter-spacing: 0.5px;
+        }
+
+        nav a:hover {
+            color: #b89758;
+            background-color: rgba(184, 151, 88, 0.08);
+            border-color: #b89758;
+        }
+
+        nav a.active {
+            color: #ffffff;
+            background-color: #1a1d24;
+            border-color: #1a1d24;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+        }
+
+        /* Main Container */
+        main {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 50px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e7ec;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+            flex: 1;
+        }
+
+        h2 {
+            color: #1a1d24;
+            font-family: 'Cinzel', 'Prompt', serif;
+            font-size: 2.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-left: 4px solid #b89758;
+            padding-left: 18px;
+            letter-spacing: 1px;
+        }
+
+        main > p {
+            color: #6c757d;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+        }
+
+        /* Search Bar & Map Filter Options */
+        .search-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 18px;
+            border: 1px solid #e2e7ec;
+            border-radius: 6px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: #b89758;
+        }
+
+        .filter-btn {
+            background: #fafbfc;
+            border: 1px solid #e2e7ec;
+            color: #5a6270;
+            padding: 12px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #1a1d24;
+            color: #ffffff;
+            border-color: #1a1d24;
+        }
+
+        /* INTERACTIVE MAP CONTAINER */
+        .map-wrapper {
+            background: #fafbfc;
+            border: 1px solid #e2e7ec;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 35px;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eef1f5;
+        }
+
+        .map-header h3 {
+            font-size: 1.1rem;
+            color: #1a1d24;
+        }
+
+        .map-hint {
+            font-size: 0.85rem;
+            color: #b89758;
+            font-weight: 400;
+        }
+
+        /* Real Interactive Map Canvas */
+        #map {
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+            border: 1px solid #dce2e8;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+        }
+
+        /* Custom Leaflet Markers & Route Styling */
+        .leaflet-popup-content-wrapper {
+            font-family: 'Prompt', sans-serif;
+            border-top: 3px solid #b89758;
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        .popup-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1d24;
+            margin-bottom: 4px;
+        }
+
+        .popup-desc {
+            font-size: 0.85rem;
+            color: #5a6270;
+            margin-bottom: 8px;
+        }
+
+        .popup-badge {
+            display: inline-block;
+            background: rgba(184, 151, 88, 0.15);
+            color: #96783e;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+
+        /* STATIONS LIST GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .info-card {
+            background: #fafbfc;
+            border: 1px solid #eef1f5;
+            border-radius: 8px;
+            padding: 22px;
+            border-top: 3px solid #b89758;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-card h3 {
+            color: #1a1d24;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .info-card .location-tag {
+            font-size: 0.8rem;
+            color: #b89758;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .info-card p {
+            color: #5a6270;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .station-details {
+            font-size: 0.82rem;
+            color: #8c95a6;
+            border-top: 1px solid #eef1f5;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-focus-map {
+            margin-top: 10px;
+            width: 100%;
+            background: transparent;
+            border: 1px solid #b89758;
+            color: #b89758;
+            padding: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-family: 'Prompt', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .btn-focus-map:hover {
+            background: #b89758;
+            color: #ffffff;
+        }
+
+        /* Navigation Buttons */
+        .action-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #eef1f5;
+        }
+
+        .btn-back {
+            color: #5a6270;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .btn-back:hover {
+            color: #b89758;
+        }
+
+        button.btn-next {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #1a1d24 0%, #343a46 100%);
+            color: #ffffff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        button.btn-next:hover {
+            background: linear-gradient(135deg, #b89758 0%, #96783e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(184, 151, 88, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #ffffff;
+            color: #8c95a6;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-top: 1px solid #e2e7ec;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ยินดีต้อนรับสู่โลกแห่งยานยนต์ไฟฟ้า BMW</h1>
+        <nav>
+            <a href="index.html">หน้าแรก</a>
+            <a href="index2.html">รุ่นรถไฟฟ้า</a>
+            <a href="index3.html">เทคโนโลยี eDrive</a>
+            <a href="index4.html">การชาร์จ & แบตเตอรี่</a>
+            <a href="index5.html">คำนวณการประหยัด</a>
+            <a href="index6.html">สิทธิประโยชน์ & ตารางผ่อน</a>
+            <a href="index7.html">จองทดลองขับ</a>
+            <a href="index8.html" class="active">ศูนย์บริการ charging</a>
+            <a href="index9.html">คำถามที่พบบ่อย</a>
+            <a href="index10.html">ติดต่อเรา</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>ศูนย์บริการชาร์จไฟฟ้า จังหวัดเชียงใหม่</h2>
+        <p>ค้นหาสถานีชาร์จ BMW Charging และพันธมิตรในจังหวัดเชียงใหม่ เลื่อนและซูมดูเส้นทางเชื่อมต่อได้อย่างอิสระ</p>
+
+        <!-- SEARCH & FILTERS -->
+        <div class="search-container">
+            <input type="text" id="searchBox" class="search-box" placeholder="🔍 ค้นหาสถานที่ในเชียงใหม่ (เช่น นิมมาน, เซ็นทรัล, หางดง)..." onkeyup="filterStations()">
+            <button class="filter-btn active" onclick="resetMapFocus()">แสดงทั้งหมด</button>
+            <button class="filter-btn" onclick="focusRoute()">เส้นทางเชื่อมต่อหลัก (Route)</button>
+        </div>
+
+        <!-- REAL INTERACTIVE MAP -->
+        <div class="map-wrapper">
+            <div class="map-header">
+                <h3>📍 แผนที่สถานีชาร์จจังหวัดเชียงใหม่ (Interactive Map)</h3>
+                <span class="map-hint">💡 ใช้นิ้วหรือเมาส์เลื่อน / ซูม (Zoom) ดูรายละเอียดเส้นทางได้</span>
+            </div>
+            
+            <!-- Map Target Div -->
+            <div id="map"></div>
+        </div>
+
+        <!-- STATIONS LIST -->
+        <h3 style="margin-bottom: 20px; color: #1a1d24; font-family: 'Cinzel', serif;">หมุดสถานีชาร์จแนะนำในเชียงใหม่</h3>
+        <div class="info-grid">
+            <div class="info-card">
+                <span class="location-tag">📍 โซนนิมมาน / ห้วยแก้ว</span>
+                <h3>MAYA Lifestyle Shopping Center</h3>
+                <p>ชั้น B1 สถานีชาร์จใจกลางย่านนิมมาน ใกล้แหล่งช้อปปิ้งและร้านอาหาร</p>
+                <div class="station-details">
+                    <span>⚡ DC 150 kW / AC 22 kW</span>
+                    <span>10:00 - 22:00 น.</span>
+                </div>
+                <button class="btn-focus-map" onclick="zoomToStation(18.8022, 98.9672, 'MAYA Shopping Center')">🎯 ดูบนแผนที่</button>
+            </div>
+
+            <div class="info-card">
+                <span class="location-tag">📍 โซนซูเปอร์ไฮเวย์</span>
+                <h3>Central Chiangmai (เซ็นทรัลเฟส)</h3>
+                <p>สถานีชาร์จขนาดใหญ่บริเวณแยกศาลเด็ก รองรับการเดินทางเชื่อมต่อต่างจังหวัด</p>
+                <div class="station-details">
+                    <span>⚡ DC Fast Charge 150 kW</span>
+                    <span>10:00 - 22:00 น.</span>
+                </div>
+                <button class="btn-focus-map" onclick="zoomToStation(18.8066, 99.0181, 'Central Chiangmai')">🎯 ดูบนแผนที่</button>
+            </div>
+
+            <div class="info-card">
+                <span class="location-tag">📍 โซนสนามบิน / หางดง</span>
+                <h3>Central Chiangmai Airport</h3>
+                <p>ใกล้นครเชียงใหม่และสนามบินเชียงใหม่ จุดแวะชาร์จสะดวกสบายก่อนขึ้นดอย</p>
+                <div class="station-details">
+                    <span>⚡ DC Fast Charge 120 kW</span>
+                    <span>10:00 - 21:30 น.</span>
+                </div>
+                <button class="btn-focus-map" onclick="zoomToStation(18.7692, 98.9755, 'Central Airport')">🎯 ดูบนแผนที่</button>
+            </div>
+
+            <div class="info-card">
+                <span class="location-tag">📍 โซนโชว์รูม BMW</span>
+                <h3>BMW Barcelona Auto Chiang Mai</h3>
+                <p>ศูนย์บริการและโชว์รูม BMW ถ.ซูเปอร์ไฮเวย์ พร้อมหัวชาร์จด่วน Ultra-Fast</p>
+                <div class="station-details">
+                    <span>⚡ DC Ultra-Fast 180 kW</span>
+                    <span>08:30 - 17:30 น.</span>
+                </div>
+                <button class="btn-focus-map" onclick="zoomToStation(18.7995, 99.0220, 'BMW Barcelona Auto')">🎯 ดูบนแผนที่</button>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <a href="index7.html" class="btn-back">← ย้อนกลับ: จองทดลองขับ</a>
+            <a href="index9.html"><button class="btn-next">ถัดไป: คำถามที่พบบ่อย →</button></a>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 BMW ELECTRIC WORLD. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <!-- Leaflet OpenStreetMap JS Library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <script>
+        // 1. Initialize Leaflet Map centered at Chiang Mai
+        const chiangmaiCenter = [18.795, 98.985];
+        const map = L.map('map').setView(chiangmaiCenter, 12);
+
+        // 2. Add Clean OpenStreetMap Tile Layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap contributors | BMW Charging Network Chiang Mai'
+        }).addTo(map);
+
+        // 3. Chiang Mai EV Charging Station Data
+        const stations = [
+            {
+                name: "MAYA Lifestyle Shopping Center",
+                lat: 18.8022,
+                lng: 98.9672,
+                desc: "ย่านนิมมานฯ ชั้น B1 หัวชาร์จ DC 150 kW / AC 22 kW",
+                type: "DC Fast Charge"
+            },
+            {
+                name: "Central Chiangmai (เซ็นทรัลเฟส)",
+                lat: 18.8066,
+                lng: 99.0181,
+                desc: "แยกศาลเด็ก โซนจอดรถ EV ชาร์จด่วน DC 150 kW",
+                type: "DC Fast Charge"
+            },
+            {
+                name: "Central Chiangmai Airport",
+                lat: 18.7692,
+                lng: 98.9755,
+                desc: "ใกล้สนามบินเชียงใหม่ หัวชาร์จ DC 120 kW",
+                type: "DC Fast Charge"
+            },
+            {
+                name: "BMW Barcelona Auto Chiang Mai",
+                lat: 18.7995,
+                lng: 99.0220,
+                desc: "โชว์รูม BMW ซูเปอร์ไฮเวย์ ชาร์จเร็ว Ultra-Fast 180 kW",
+                type: "BMW Flagship Station"
+            },
+            {
+                name: "One Nimman EV Hub",
+                lat: 18.8001,
+                lng: 98.9682,
+                desc: "วันนิมมาน ซอย 1 หัวชาร์จ AC Wallbox 22 kW",
+                type: "AC Charging"
+            }
+        ];
+
+        // 4. Add Markers to Map
+        const markers = [];
+        stations.forEach(st => {
+            const popupContent = `
+                <div class="popup-title">${st.name}</div>
+                <div class="popup-desc">${st.desc}</div>
+                <span class="popup-badge">⚡ ${st.type}</span>
+            `;
+
+            const marker = L.marker([st.lat, st.lng]).addTo(map)
+                .bindPopup(popupContent);
+            
+            markers.push({ name: st.name, marker: marker, lat: st.lat, lng: st.lng });
+        });
+
+        // 5. Draw EV Route Line (Connecting major Chiang Mai Ring Roads / Superhighway)
+        const routeCoordinates = [
+            [18.7692, 98.9755], // Central Airport
+            [18.7880, 98.9850], // Old City South
+            [18.8022, 98.9672], // MAYA Nimman
+            [18.8066, 99.0181], // Central Festival
+            [18.7995, 99.0220]  // BMW Barcelona Auto
+        ];
+
+        const routePolyline = L.polyline(routeCoordinates, {
+            color: '#b89758',
+            weight: 4,
+            opacity: 0.8,
+            dashArray: '8, 8'
+        }).addTo(map);
+
+        routePolyline.bindTooltip("🛣️ เส้นทางเชื่อมต่อสถานีชาร์จหลัก (Chiang Mai EV Corridor)", { sticky: true });
+
+        // 6. Interactive Functions
+        function zoomToStation(lat, lng, name) {
+            map.flyTo([lat, lng], 15, { duration: 1.5 });
+            const target = markers.find(m => m.name.includes(name));
+            if (target) {
+                setTimeout(() => target.marker.openPopup(), 1200);
+            }
+        }
+
+        function resetMapFocus() {
+            map.flyTo(chiangmaiCenter, 12, { duration: 1.2 });
+        }
+
+        function focusRoute() {
+            map.fitBounds(routePolyline.getBounds(), { padding: [30, 30] });
+        }
+
+        function filterStations() {
+            const query = document.getElementById('searchBox').value.toLowerCase();
+            markers.forEach(m => {
+                if (m.name.toLowerCase().includes(query)) {
+                    map.panTo([m.lat, m.lng]);
+                    m.marker.openPopup();
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
