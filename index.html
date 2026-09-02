@@ -241,6 +241,17 @@
             background-color: rgba(184, 151, 88, 0.1);
         }
 
+        .icon-btn.playing {
+            color: #b89758;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
         .icon-badge {
             position: absolute;
             top: -2px;
@@ -257,7 +268,6 @@
             justify-content: center;
         }
 
-        /* ปุ่มสามขีด (Hamburger Button) */
         .menu-toggle {
             font-size: 1.4rem;
         }
@@ -409,6 +419,11 @@
 </head>
 <body>
 
+    <audio id="bgMusic" loop>
+        <source src="bg-music.mp3" type="audio/mpeg">
+        <source src="bg-music.ogg" type="audio/ogg">
+    </audio>
+
     <section class="hero-fullscreen">
         <video class="hero-video" autoplay loop muted playsinline>
             <source src="The Soul of BMW.mp4" type="video/mp4">
@@ -443,6 +458,10 @@
             </a>
 
             <div class="header-icons">
+                <button class="icon-btn" id="musicToggleBtn" title="เปิด/ปิดเพลงประกอบ">
+                    <i class="fa-solid fa-music"></i>
+                </button>
+
                 <a href="index.0.html" class="icon-btn" title="ลงทะเบียน / บัญชีของฉัน">
                     <i class="fa-regular fa-user"></i>
                 </a>
@@ -458,7 +477,6 @@
                     <i class="fa-solid fa-location-dot"></i>
                 </a>
                 
-                <!-- ปุ่มเปิดเมนูสามขีด -->
                 <button class="icon-btn menu-toggle" id="menuOpenBtn" title="เมนูหลัก">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -466,7 +484,6 @@
         </div>
     </header>
 
-    <!-- Side Drawer Menu & Overlay -->
     <div class="nav-overlay" id="navOverlay"></div>
     <aside class="nav-drawer" id="navDrawer">
         <div class="drawer-header">
@@ -504,7 +521,28 @@
     </footer>
 
     <script>
-        // ระบบเปิด-ปิด Side Drawer Menu
+        // --- ระบบเล่นเพลง (Audio Controller) ---
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicToggleBtn');
+        let isPlaying = false;
+
+        musicBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.classList.remove('playing');
+                musicBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+            } else {
+                bgMusic.play().then(() => {
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                }).catch(err => {
+                    console.log("Audio play failed: ", err);
+                });
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // --- ระบบเปิด-ปิด Side Drawer Menu ---
         const openBtn = document.getElementById('menuOpenBtn');
         const closeBtn = document.getElementById('menuCloseBtn');
         const drawer = document.getElementById('navDrawer');
@@ -524,11 +562,10 @@
         closeBtn.addEventListener('click', closeMenu);
         overlay.addEventListener('click', closeMenu);
 
-        // ระบบดึงเวลา ( Optimized )
+        // --- ระบบดึงเวลา ( Optimized ) ---
         let currentTime = null;
 
         async function initTime() {
-            const timeElement = document.getElementById('current-time');
             try {
                 const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Bangkok');
                 if (!response.ok) throw new Error('API Response Error');
