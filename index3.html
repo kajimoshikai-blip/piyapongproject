@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BMW Electric World - เทคโนโลยี eDrive & 3D Experience</title>
     
-    <!-- Google Fonts: Cinzel, Orbitron & Prompt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Orbitron:wght@500;700;900&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Three.js CDN สำหรับเรนเดอร์ 3D แบบชัวร์ 100% -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
@@ -32,64 +32,146 @@
             font-weight: 300;
         }
 
-        /* Header & Navigation */
-        header {
-            background: #12161f;
-            border-bottom: 2px solid #0066b1;
-            padding: 25px 5%;
-            text-align: center;
+        /* --- STICKY HEADER CONTAINER --- */
+        .header-container {
             position: sticky;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 25px rgba(0, 102, 177, 0.2);
+            z-index: 1000;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
 
-        header h1 {
-            color: #ffffff;
-            font-family: 'Cinzel', 'Prompt', serif;
-            font-size: 1.7rem;
+        /* 1. TOP HEADER (ตามภาพที่ 2) */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 5%;
+            background: #ffffff;
+            border-bottom: 1px solid #eef1f5;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-area img {
+            height: 42px;
+            width: auto;
+        }
+
+        .logo-area h1 {
+            color: #1a1d24;
+            font-family: 'Cinzel', serif;
+            font-size: 1.35rem;
             font-weight: 700;
-            letter-spacing: 3px;
-            margin-bottom: 18px;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        nav {
+        .header-icons {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
+            align-items: center;
+            gap: 12px;
         }
 
-        nav a {
-            color: #9aa5b5;
+        .icon-btn {
+            color: #333a48;
+            font-size: 1.2rem;
             text-decoration: none;
-            font-size: 0.88rem;
-            font-weight: 400;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-            letter-spacing: 0.5px;
+            position: relative;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
 
-        nav a:hover {
-            color: #05a3e8;
-            background-color: rgba(5, 163, 232, 0.1);
-            border-color: #05a3e8;
+        .icon-btn:hover {
+            color: #b89758;
+            background-color: rgba(184, 151, 88, 0.1);
         }
 
-        nav a.active {
+        .icon-btn.playing {
+            color: #b89758;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .icon-badge {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            background: #b89758;
             color: #ffffff;
-            background-color: #0066b1;
-            border-color: #05a3e8;
-            box-shadow: 0 0 15px rgba(0, 102, 177, 0.5);
-            font-weight: 500;
+            font-size: 0.65rem;
+            font-weight: 700;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ffffff;
         }
 
-        /* Main Container */
+        /* 2. LOWER NAVIGATION BAR (ตามภาพที่ 1) */
+        .main-nav-bar {
+            background: #ffffff;
+            border-bottom: 3px solid #b89758; /* เส้นขอบสีทองด้านล่าง */
+            padding: 10px 2%;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .main-nav-bar nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .main-nav-bar nav a {
+            color: #333a48;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .main-nav-bar nav a:hover {
+            color: #b89758;
+            background-color: rgba(184, 151, 88, 0.08);
+        }
+
+        /* ปรับดีไซน์ ปุ่มเมนูที่เลือกอยู่ ให้ตรงตามรูปแรก */
+        .main-nav-bar nav a.active {
+            color: #ffffff;
+            background-color: #1e222b; /* สีกรอบดำเข้ม */
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- MAIN CONTENT --- */
         main {
-            max-width: 1000px;
+            max-width: 1050px;
             margin: 40px auto;
             padding: 40px;
             background: #12151c;
@@ -360,7 +442,7 @@
             line-height: 1.7;
         }
 
-        /* Navigation Area */
+        /* Action Buttons Area */
         .action-area {
             display: flex;
             justify-content: space-between;
@@ -425,32 +507,69 @@
             #car3dCanvas {
                 height: 300px;
             }
+            .logo-area h1 {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>ยินดีต้อนรับสู่โลกแห่งยานยนต์ไฟฟ้า BMW</h1>
-        <nav>
-            <a href="index.html">หน้าแรก</a>
-            <a href="index2.html">รุ่นรถไฟฟ้า</a>
-            <a href="index3.html" class="active">เทคโนโลยี eDrive</a>
-            <a href="index4.html">การชาร์จ & แบตเตอรี่</a>
-            <a href="index5.html">คำนวณการประหยัด</a>
-            <a href="index6.html">สิทธิประโยชน์ & ตารางผ่อน</a>
-            <a href="index7.html">จองทดลองขับ</a>
-            <a href="index8.html">ศูนย์บริการ charging</a>
-            <a href="index9.html">คำถามที่พบบ่อย</a>
-            <a href="index10.html">ติดต่อเรา</a>
-        </nav>
-    </header>
+    <audio id="bgMusic" loop>
+        <source src="lirik.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="header-container">
+        <div class="top-header">
+            <a href="index.html" class="logo-area">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" alt="BMW Logo">
+                <h1>BMW ELECTRIC WORLD</h1>
+            </a>
+
+            <div class="header-icons">
+                <button class="icon-btn" id="musicToggleBtn" title="เปิด/ปิดเพลงประกอบ">
+                    <i class="fa-solid fa-music"></i>
+                </button>
+                <a href="index.0.html" class="icon-btn" title="ลงทะเบียน / บัญชีของฉัน">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+                <a href="#cart" class="icon-btn" title="ตะกร้าสินค้า / จองซื้อ">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="icon-badge">1</span>
+                </a>
+                <a href="#favorites" class="icon-btn" title="รายการที่ถูกใจ">
+                    <i class="fa-regular fa-heart"></i>
+                    <span class="icon-badge">2</span>
+                </a>
+                <a href="index8.html" class="icon-btn" title="ค้นหาศูนย์บริการ & สถานีชาร์จ">
+                    <i class="fa-solid fa-location-dot"></i>
+                </a>
+                <button class="icon-btn" title="เมนูหลัก">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="main-nav-bar">
+            <nav>
+                <a href="index.html">หน้าแรก</a>
+                <a href="index2.html">รุ่นรถไฟฟ้า</a>
+                <a href="index3.html" class="active">เทคโนโลยี eDrive</a>
+                <a href="index4.html">การชาร์จ & แบตเตอรี่</a>
+                <a href="index5.html">คำนวณการประหยัด</a>
+                <a href="index6.html">สิทธิประโยชน์ & ตารางผ่อน</a>
+                <a href="index7.html">จองทดลองขับ</a>
+                <a href="index8.html">ศูนย์บริการ charging</a>
+                <a href="index9.html">คำถามที่พบบ่อย</a>
+                <a href="index10.html">ติดต่อเรา</a>
+            </nav>
+        </div>
+    </div>
 
     <main>
         <h2>นวัตกรรม BMW eDrive Generation 5</h2>
         <p>สัมผัสสมรรถนะการขับขี่สไตล์สปอร์ต และโครงสร้างตัวรถ 3D แบบ Interactive</p>
 
-        <!-- 3D CAR CANVAS SECTION -->
         <div class="model-container">
             <div class="model-header">
                 <span class="model-title">🚘 3D BMW CONCEPT CAR (INTERACTIVE)</span>
@@ -460,7 +579,6 @@
             <canvas id="car3dCanvas"></canvas>
         </div>
 
-        <!-- BMW CURVED DISPLAY DASHBOARD -->
         <div class="cockpit-dashboard">
             <div class="cockpit-header">
                 <span class="cockpit-title">BMW iDrive Live Cockpit</span>
@@ -498,7 +616,6 @@
             </div>
         </div>
 
-        <!-- TECH FEATURES GRID -->
         <div class="tech-grid">
             <div class="tech-card">
                 <h3>BMW xDrive อัจฉริยะ</h3>
@@ -531,8 +648,28 @@
         <p>© 2026 BMW ELECTRIC WORLD. ALL RIGHTS RESERVED.</p>
     </footer>
 
-    <!-- THREE.JS 3D CAR RENDER SCRIPT -->
     <script>
+        // Audio Toggle Setup
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicToggleBtn');
+        let isPlaying = false;
+
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isPlaying) {
+                bgMusic.pause();
+                isPlaying = false;
+                musicBtn.classList.remove('playing');
+                musicBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+            } else {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                }).catch(err => console.log(err));
+            }
+        });
+
         // Setup Three.js Scene
         const canvas = document.getElementById('car3dCanvas');
         const scene = new THREE.Scene();
@@ -545,11 +682,11 @@
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = true;
 
-        // Orbit Controls (หมุนด้วยเมาส์)
+        // Orbit Controls
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.maxPolarAngle = Math.PI / 2 - 0.05; // ไม่ให้มุดใต้พื้น
+        controls.maxPolarAngle = Math.PI / 2 - 0.05;
 
         // Lights
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -567,7 +704,7 @@
         // Build 3D BMW Concept Car Group
         const carGroup = new THREE.Group();
 
-        // Car Body Material (BMW Blue Metallic)
+        // Car Body Material
         const bodyMaterial = new THREE.MeshStandardMaterial({
             color: 0x0055a5,
             metalness: 0.8,
@@ -597,21 +734,21 @@
             roughness: 0.1
         });
 
-        // Lower Body (ตัวถังล่าง)
+        // Lower Body
         const lowerBodyGeo = new THREE.BoxGeometry(2, 0.5, 3.8);
         const lowerBody = new THREE.Mesh(lowerBodyGeo, bodyMaterial);
         lowerBody.position.y = 0.4;
         lowerBody.castShadow = true;
         carGroup.add(lowerBody);
 
-        // Upper Cabin (หลังคา)
+        // Upper Cabin
         const upperBodyGeo = new THREE.BoxGeometry(1.6, 0.45, 2);
         const upperBody = new THREE.Mesh(upperBodyGeo, glassMaterial);
         upperBody.position.set(0, 0.85, -0.2);
         upperBody.castShadow = true;
         carGroup.add(upperBody);
 
-        // BMW Kidney Grille (กระจังหน้าคู่)
+        // BMW Kidney Grille
         const grilleGeo = new THREE.BoxGeometry(0.35, 0.2, 0.05);
         const grilleMat = new THREE.MeshStandardMaterial({ color: 0x05a3e8, emissive: 0x05a3e8, emissiveIntensity: 0.5 });
         const grilleL = new THREE.Mesh(grilleGeo, grilleMat);
@@ -643,7 +780,7 @@
 
         scene.add(carGroup);
 
-        // Grid Floor (พื้น)
+        // Grid Floor
         const gridHelper = new THREE.GridHelper(20, 20, 0x05a3e8, 0x1e2533);
         gridHelper.position.y = 0;
         scene.add(gridHelper);
@@ -651,7 +788,7 @@
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            carGroup.rotation.y += 0.005; // หมุนรอบตัวเองช้าๆ
+            carGroup.rotation.y += 0.005;
             controls.update();
             renderer.render(scene, camera);
         }
