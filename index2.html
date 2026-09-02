@@ -851,38 +851,35 @@
             // Initial Filter Run
             filterCars();
 
-            // --- Modal Controls ---
-            const openModal = (name, price) => {
-                modalCarName.textContent = name;
-                modalCarPrice.textContent = price;
-                modal.classList.add("active");
+            // --- Modal Control ---
+            document.addEventListener("click", (e) => {
+                if (e.target.classList.contains("btn-buy")) {
+                    const carName = e.target.getAttribute("data-name");
+                    const carPrice = e.target.getAttribute("data-price");
+
+                    modalCarName.textContent = carName;
+                    modalCarPrice.textContent = carPrice;
+                    modal.classList.add("active");
+                }
+            });
+
+            const closeModal = () => {
+                modal.classList.remove("active");
+                orderForm.reset();
             };
 
-            const closeModal = () => modal.classList.remove("active");
-
-            // Buy Button Click Handlers (Delegation / Clean Listeners)
-            document.querySelectorAll(".btn-buy").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const carName = btn.dataset.name;
-                    const carPrice = btn.dataset.price;
-                    openModal(carName, carPrice);
-                });
-            });
-
             btnCloseModal.addEventListener("click", closeModal);
-            
+
             modal.addEventListener("click", (e) => {
-                if (e.target === modal) closeModal();
+                if (e.target === modal) {
+                    closeModal();
+                }
             });
 
-            // --- Form Submit ---
+            // Form Submit Handler
             orderForm.addEventListener("submit", (e) => {
                 e.preventDefault();
-                const name = document.getElementById("fullname").value;
-                const car = modalCarName.textContent;
-
-                alert(`ขอบคุณครับ คุณ${name} ระบบได้รับการจองรุ่น ${car} เรียบร้อยแล้ว เจ้าหน้าที่จะติดต่อกลับโดยเร็วที่สุด`);
-                orderForm.reset();
+                alert(`ขอบคุณสำหรับการสั่งซื้อ ${modalCarName.textContent}!\nทางเราได้รับการจองของคุณเรียบร้อยแล้ว และจะติดต่อกลับโดยเร็วที่สุด`);
                 closeModal();
             });
         });
