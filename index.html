@@ -526,21 +526,43 @@
         const musicBtn = document.getElementById('musicToggleBtn');
         let isPlaying = false;
 
-        musicBtn.addEventListener('click', () => {
+        function playAudio() {
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            }).catch(err => {
+                console.log("Audio play blocked/failed: ", err);
+            });
+        }
+
+        function pauseAudio() {
+            bgMusic.pause();
+            isPlaying = false;
+            musicBtn.classList.remove('playing');
+            musicBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+        }
+
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (isPlaying) {
-                bgMusic.pause();
-                musicBtn.classList.remove('playing');
-                musicBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+                pauseAudio();
             } else {
-                bgMusic.play().then(() => {
-                    musicBtn.classList.add('playing');
-                    musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                }).catch(err => {
-                    console.log("Audio play failed: ", err);
-                });
+                playAudio();
             }
-            isPlaying = !isPlaying;
         });
+
+        // ปลดล็อก Autoplay โดยเริ่มเล่นเมื่อมีการคลิกครั้งแรกบนหน้าเว็บ
+        function handleFirstInteraction() {
+            if (!isPlaying) {
+                playAudio();
+            }
+            document.removeEventListener('click', handleFirstInteraction);
+            document.removeEventListener('keydown', handleFirstInteraction);
+        }
+
+        document.addEventListener('click', handleFirstInteraction);
+        document.addEventListener('keydown', handleFirstInteraction);
 
         // --- ระบบเปิด-ปิด Side Drawer Menu ---
         const openBtn = document.getElementById('menuOpenBtn');
